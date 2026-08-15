@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Каталог — Фактура</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header__inner">
+             <a href="index.html" class="logo">
+                <img src="logo.jpg" alt="Фактура-мебель" class="logo-img" />
+                <span>Фактура-мебель</span>
+            </a>
+            <nav>
+                <a href="index.html#works">Работы</a>
+                <a href="catalog.html" class="active">Каталог</a>
+                <a href="index.html#about">О нас</a>
+                <a href="index.html#contact">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="catalog-hero">
+        <div class="container">
+            <h1>Каталог изделий</h1>
+            <p>Каждое изделие создается на заказ — от заливки до финальной полировки</p>
+        </div>
+    </section>
+
+    <section class="catalog">
+        <div class="container">
+            <!-- КНОПКА ИНДИВИДУАЛЬНОГО ЗАКАЗА -->
+            <div style="text-align:center;margin-bottom:40px;">
+                <button onclick="openContactModal()" class="btn" style="background:#6b3a1f;padding:16px 40px;font-size:18px;">
+                    🛋️ Создание мебели по индивидуальному заказу
+                </button>
+            </div>
+
+            <!-- КОНТЕЙНЕР ДЛЯ КАРТОЧЕК -->
+            <div id="catalog-container">
+                <!-- Сюда загружаются товары -->
+            </div>
+        </div>
+    </section>
+
+    <!-- МОДАЛЬНОЕ ОКНО С КОНТАКТАМИ -->
+    <div id="contactModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;padding:20px;">
+        <div style="background:#fffcf8;max-width:500px;width:100%;border-radius:24px;padding:40px;position:relative;text-align:center;">
+            
+            <button onclick="closeContactModal()" style="position:absolute;top:12px;right:16px;font-size:28px;background:none;border:none;cursor:pointer;color:#6b4f3a;">&times;</button>
+
+            <h2 style="font-family:'Playfair Display',serif;color:#2c1810;margin-bottom:12px;">📝 Индивидуальный заказ</h2>
+            <p style="color:#6b4f3a;margin-bottom:16px;font-size:16px;line-height:1.6;">
+                Вы можете оформить заказ по своим размерам, цвету и материалам.<br />
+                Свяжитесь с нами любым удобным способом:
+            </p>
+
+            <div style="display:flex;flex-direction:column;gap:12px;margin:20px 0;">
+                <a href="tel:+79632947362" style="background:#f9f4ed;padding:14px;border-radius:12px;text-decoration:none;color:#2c1810;font-size:18px;font-weight:500;border:1px solid #e8c9a0;">
+                    📞 8 (963) 294-73-62
+                </a>
+                <a href="tel:+79086695823" style="background:#f9f4ed;padding:14px;border-radius:12px;text-decoration:none;color:#2c1810;font-size:18px;font-weight:500;border:1px solid #e8c9a0;">
+                    📞 8 (908) 669-58-23
+                </a>
+                <a href="mailto:Vasbux2015@mail.ru" style="background:#f9f4ed;padding:14px;border-radius:12px;text-decoration:none;color:#2c1810;font-size:18px;font-weight:500;border:1px solid #e8c9a0;">
+                    ✉️ Vasbux2015@mail.ru
+                </a>
+            </div>
+
+            <p style="font-size:14px;color:#6b4f3a;opacity:0.7;margin-top:8px;">
+                Мы ответим в течение 15 минут в рабочее время
+            </p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Фактура — уникальные изделия и мебель</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== ЗАГРУЗКА ТОВАРОВ =====
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+
+        function renderCatalog() {
+            const container = document.getElementById('catalog-container');
+            if (!container) return;
+
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:60px 20px;color:#6b4f3a;">
+                        <h2 style="font-family:'Playfair Display',serif;">Каталог пуст!</h2>
+                        <p style="opacity:0.7;">В скором времени мы добавим товары</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = products.map((product, index) => {
+                // Фото
+                let allImages = [];
+                if (product.mainImage) allImages.push(product.mainImage);
+                if (product.extraImages) {
+                    const extras = product.extraImages.split(',').map(s => s.trim()).filter(s => s);
+                    allImages = allImages.concat(extras);
+                }
+                if (allImages.length === 0) {
+                    allImages = ['images/placeholder.jpg'];
+                }
+
+                let thumbsHtml = allImages.map((src, i) => `
+                    <div class="thumb ${i === 0 ? 'active' : ''}" onclick="changeMainImage(${index}, '${src}')">
+                        <img src="${src}" alt="Фото" onerror="this.src='images/placeholder.jpg'" />
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="product-card">
+                        <div class="product__gallery">
+                            <div class="gallery-main">
+                                <img id="main-img-${index}" src="${allImages[0]}" alt="${product.name}" onerror="this.src='images/placeholder.jpg'" />
+                            </div>
+                            <div class="gallery-thumbs">
+                                ${thumbsHtml}
+                            </div>
+                        </div>
+                        <div class="product__info">
+                            <h2>${product.name || 'Без названия'}</h2>
+                            <div class="product__price">${product.price || '0'} ₽</div>
+                            <div class="product__detail"><span class="detail-label">Артикул:</span> ${product.article || '—'}</div>
+                            <div class="product__detail"><span class="detail-label">Категория:</span> ${product.category || 'Без категории'}</div>
+                            <div class="product__detail"><span class="detail-label">Характеристики:</span> ${product.specs || 'Не указаны'}</div>
+                            <div class="product__description">
+                                <p>${(product.description || 'Описание отсутствует').replace(/[<>]/g, '')}</p>
+                            </div>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+                                <span class="product__badge" style="background:${product.inStock ? '#2e7d32' : '#b71c1c'};color:#fff;padding:6px 18px;border-radius:20px;font-size:14px;">
+                                    ${product.inStock ? '✔ В наличии' : '✘ Нет в наличии'}
+                                </span>
+                                <a href="tel:+79632947362" class="btn" style="flex:1;text-align:center;">
+                                    ${product.inStock ? 'Купить' : 'Заказать'}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== ПЕРЕКЛЮЧЕНИЕ ФОТО =====
+        window.changeMainImage = function(index, src) {
+            const img = document.getElementById(`main-img-${index}`);
+            if (img) {
+                img.src = src;
+                const gallery = img.closest('.product__gallery');
+                gallery.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+                const thumbs = gallery.querySelectorAll('.thumb');
+                thumbs.forEach(t => {
+                    const imgSrc = t.querySelector('img')?.src;
+                    if (imgSrc && imgSrc.includes(src)) {
+                        t.classList.add('active');
+                    }
+                });
+            }
+        };
+
+        // ===== МОДАЛЬНОЕ ОКНО КОНТАКТОВ =====
+        function openContactModal() {
+            document.getElementById('contactModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('contactModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeContactModal();
+            }
+        });
+
+        renderCatalog();
+    </script>
+
+</body>
+</html>

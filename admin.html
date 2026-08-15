@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админ-панель — Фактура</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== СТИЛИ АДМИНКИ ===== */
+        .admin-container {
+            max-width: 1200px;
+            margin: 100px auto 60px;
+            padding: 0 20px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .admin-header h1 {
+            font-family: 'Playfair Display', serif;
+            color: #2c1810;
+        }
+        .admin-header .btn {
+            background: #6b3a1f;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .admin-header .btn:hover {
+            background: #8b5a2b;
+        }
+        .admin-form {
+            background: #fffcf8;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(91, 58, 29, 0.08);
+            margin-bottom: 40px;
+        }
+        .admin-form h2 {
+            font-family: 'Playfair Display', serif;
+            color: #2c1810;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #2c1810;
+            margin-bottom: 4px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            background: #faf8f5;
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .form-preview {
+            max-width: 150px;
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+        .admin-form .btn-submit {
+            background: #6b3a1f;
+            color: #fff;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .admin-form .btn-submit:hover {
+            background: #8b5a2b;
+        }
+        .admin-products {
+            display: grid;
+            gap: 20px;
+        }
+        .admin-product-card {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 20px;
+            background: #fffcf8;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(91, 58, 29, 0.06);
+            align-items: center;
+        }
+        .admin-product-card img {
+            width: 150px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .admin-product-info h3 {
+            font-family: 'Playfair Display', serif;
+            color: #2c1810;
+            margin-bottom: 4px;
+        }
+        .admin-product-info p {
+            margin: 2px 0;
+            color: #6b4f3a;
+            font-size: 14px;
+        }
+        .admin-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .admin-actions button {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .btn-edit {
+            background: #e8c9a0;
+            color: #2c1810;
+        }
+        .btn-edit:hover {
+            background: #d4b084;
+        }
+        .btn-delete {
+            background: #e8a0a0;
+            color: #2c1810;
+        }
+        .btn-delete:hover {
+            background: #d48484;
+        }
+        #edit-form {
+            display: none;
+            background: #f9f4ed;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 30px;
+            border: 2px solid #e8c9a0;
+        }
+        .works-admin-area {
+            margin-top: 60px;
+            border-top: 2px solid #e8c9a0;
+            padding-top: 40px;
+        }
+        .work-admin-card {
+            background: #f9f4ed;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #e8c9a0;
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .admin-product-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .admin-product-card img {
+                width: 100%;
+                height: 180px;
+            }
+            .admin-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ШАПКА -->
+    <header class="header">
+        <div class="container header__inner">
+            <a href="index.html" class="logo">
+                <img src="logo.jpg" alt="Фактура-мебель" class="logo-img" />
+                <span>Фактура-мебель</span>
+            </a>
+            <nav>
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="admin.html" class="active">Админ-панель</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-container">
+
+        <!-- ЗАГОЛОВОК -->
+        <div class="admin-header">
+            <h1>📦 Управление товарами</h1>
+            <a href="catalog.html" class="btn" target="_blank">Посмотреть сайт</a>
+        </div>
+
+        <!-- ===== ФОРМА ДОБАВЛЕНИЯ ТОВАРА ===== -->
+        <div class="admin-form">
+            <h2>➕ Добавить товар</h2>
+            <form id="add-product-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Название *</label>
+                        <input type="text" id="name" required placeholder="Например: Двуспальная кровать" />
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Цена (в рублях) *</label>
+                        <input type="text" id="price" required placeholder="280 000" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="article">Артикул</label>
+                        <input type="text" id="article" placeholder="ФАКТ-001" />
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Категория *</label>
+                        <input type="text" id="category" required placeholder="Например: Кровати" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="specs">Характеристики</label>
+                    <input type="text" id="specs" placeholder="200×180×90 см, массив дуба" />
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Описание</label>
+                    <textarea id="description" placeholder="Краткое описание товара..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mainImage">Главное фото (ссылка)</label>
+                        <input type="text" id="mainImage" placeholder="https://i.ibb.co/.../photo.jpg" />
+                        <img id="mainImage-preview" class="form-preview" src="images/placeholder.jpg" alt="Превью" />
+                    </div>
+                    <div class="form-group">
+                        <label for="extraImages">Дополнительные фото (через запятую)</label>
+                        <input type="text" id="extraImages" placeholder="https://i.ibb.co/.../photo2.jpg, https://i.ibb.co/.../photo3.jpg" />
+                        <small style="color:#6b4f3a;">Укажите ссылки через запятую</small>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:flex;align-items:center;gap:12px;padding-top:8px;">
+                    <input type="checkbox" id="inStock" checked />
+                    <label for="inStock" style="margin:0;">В наличии</label>
+                </div>
+
+                <button type="submit" class="btn-submit">➕ Добавить товар</button>
+            </form>
+        </div>
+
+        <!-- ===== ФОРМА РЕДАКТИРОВАНИЯ ===== -->
+        <div id="edit-form" class="admin-form">
+            <h2>✏️ Редактировать товар</h2>
+            <form id="edit-form-inner">
+                <input type="hidden" id="edit-index" />
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-name">Название *</label>
+                        <input type="text" id="edit-name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-price">Цена *</label>
+                        <input type="text" id="edit-price" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-article">Артикул</label>
+                        <input type="text" id="edit-article" />
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-category">Категория</label>
+                        <input type="text" id="edit-category" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-specs">Характеристики</label>
+                    <input type="text" id="edit-specs" />
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-description">Описание</label>
+                    <textarea id="edit-description"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-mainImage">Главное фото</label>
+                        <input type="text" id="edit-mainImage" />
+                        <img id="edit-mainImage-preview" class="form-preview" src="images/placeholder.jpg" alt="Превью" />
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-extraImages">Дополнительные фото (через запятую)</label>
+                        <input type="text" id="edit-extraImages" />
+                        <small style="color:#6b4f3a;">Укажите ссылки через запятую</small>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:flex;align-items:center;gap:12px;padding-top:8px;">
+                    <input type="checkbox" id="edit-inStock" checked />
+                    <label for="edit-inStock" style="margin:0;">В наличии</label>
+                </div>
+
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <button type="submit" class="btn-submit">💾 Сохранить изменения</button>
+                    <button type="button" id="cancel-edit" class="btn-submit" style="background:#999;">❌ Отмена</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ===== СПИСОК ТОВАРОВ ===== -->
+        <h2 style="font-family:'Playfair Display',serif;color:#2c1810;margin-bottom:20px;">📋 Все товары</h2>
+        <div id="admin-products" class="admin-products">
+            <!-- Сюда загружаются товары -->
+        </div>
+
+        <!-- ===== УПРАВЛЕНИЕ РАБОТАМИ НА ГЛАВНОЙ ===== -->
+        <div class="works-admin-area">
+            <h2 style="font-family:'Playfair Display',serif;color:#2c1810;margin-bottom:20px;">📋 Управление работами на главной</h2>
+            <div id="works-admin-container">
+                <!-- Сюда загружаются карточки -->
+            </div>
+            <button id="save-works-btn" class="btn-submit" style="margin-top:16px;">💾 Сохранить изменения</button>
+        </div>
+
+    </div>
+
+    <!-- ФУТЕР -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Фактура — уникальные изделия и мебель</p>
+        </div>
+    </footer>
+
+    <script src="admin.js"></script>
+</body>
+<script>
+    // Простая защита админки
+    const password = prompt('Введите пароль для входа в админ-панель:');
+    if (password !== 'Tat424611') {
+        alert('Неверный пароль!');
+        window.location.href = 'index.html';
+    }
+</script>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Фактура — мебель</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- ШАПКА -->
+    <header class="header">
+        <div class="container header__inner">
+            <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="Фактура-мебель" class="logo-img" />
+    <span>Фактура-мебель</span>
+</a>
+            <nav>
+                <a href="index.html#works">Работы</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#about">О нас</a>
+                <a href="index.html#contact">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ГЛАВНЫЙ ЭКРАН -->
+<section class="hero">
+    <div class="hero__overlay"></div>
+    <div class="hero__decoration"></div>
+    <div class="container hero__content">
+        <h1>Мебель и декор <br /><span>под ваш заказ</span></h1>
+        <p>Изготовим любую модель по вашим размерам, чертежам или эскизу. Кровати, шкафы, столы, предметы интерьера и изделия из эпоксидной смолы.</p>
+        <div class="hero__buttons">
+            <a href="#works" class="btn">Наши работы</a>
+        </div>
+    </div>
+</section>
+
+    <!-- ПОРТФОЛИО -->
+<section id="works" class="works">
+    <div class="container">
+        <h2 class="section-title">Наши работы</h2>
+        <div class="works__grid" id="works-container">
+            <!-- Сюда загружаются карточки из localStorage -->
+        </div>
+        <div style="text-align:center;margin-top:48px;">
+            <a href="catalog.html" class="btn">Перейти в каталог</a>
+        </div>
+    </div>
+</section>
+
+    <!-- О НАС -->
+    <section id="about" class="about">
+        <div class="container about__inner">
+            <div class="about__text">
+                <h2>Ручная работа <br />с душой</h2>
+                <p>Мы создаём вещи, которые становятся центром интерьера. Вы не найдёте двух одинаковых изделий — каждое создано в единственном экземпляре.</p>
+                <p>От идеи до финальной полировки — всё делаем сами.</p>
+            </div>
+            <div class="about__stats">
+    <div><strong>100%</strong> ручная работа</div>
+    <div><strong>Уникально</strong> каждое изделие</div>
+    <div>
+        <img src="logo.jpg" alt="Фактура-мебель" style="max-width:120px;display:block;margin:0 auto;" />
+    </div>
+</div>
+        </div>
+    </div>
+</section>
+
+ <!-- КОНТАКТЫ -->
+<section id="contact" class="contact">
+    <div class="container contact__inner">
+        <h2>Давайте обсудим ваш заказ</h2>
+        <p>Напишите нам</p>
+        <div class="contact__links">
+            <a href="https://t.me/+89632947362" target="_blank" class="btn">
+                Telegram
+            </a>
+            <a href="https://wa.me/79632947362" target="_blank" class="btn btn--outline">
+                WhatsApp
+            </a>
+        </div>
+        <p style="margin-top:20px;font-size:14px;opacity:0.6;">
+            или звоните:
+            <strong>
+                <a href="tel:+79632947362" style="color:#e8c9a0;text-decoration:none;border-bottom:1px solid rgba(232,201,160,0.3);">
+                    8 (963) 294-73-62
+                </a>
+                &nbsp;и&nbsp;
+                <a href="tel:+79086695823" style="color:#e8c9a0;text-decoration:none;border-bottom:1px solid rgba(232,201,160,0.3);">
+                    8 (908) 669-58-23
+                </a>
+            </strong>
+        </p>
+        <!-- ★ ЗДЕСЬ НОВАЯ ПОЧТА ★ -->
+        <p style="margin-top:10px;font-size:14px;opacity:0.6;">
+            ✉️ <a href="mailto:Vasbux2015@mail.ru" style="color:#e8c9a0;text-decoration:none;border-bottom:1px solid rgba(232,201,160,0.3);">
+                Vasbux2015@mail.ru
+            </a>
+        </p>
+    </div>
+</section>
+
+    <!-- ФУТЕР -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Фактура — уникальные изделия и мебель</p>
+        </div>
+    </footer>
+
+        <script src="main.js"></script>
+
+    <!-- ===== СКРИПТ ДЛЯ КАРТОЧЕК "НАШИ РАБОТЫ" ===== -->
+    <script>
+        function renderWorks() {
+            const container = document.getElementById('works-container');
+            if (!container) return;
+
+            const works = JSON.parse(localStorage.getItem('worksData')) || [
+                { id: 1, image: 'bed.jpg', title: 'Двуспальные кровати', description: 'Лаконичная классика для вашей спальни' },
+                { id: 2, image: 'chess.jpg', title: 'Шахматы', description: 'Искусство и стратегия в одном наборе' },
+                { id: 3, image: 'table.jpg', title: 'Журнальные столики', description: 'Столик, который станет центром интерьера' }
+            ];
+
+            container.innerHTML = works.map(item => `
+                <div class="work-card">
+                    <img src="${item.image}" alt="${item.title}" onerror="this.src='images/placeholder.jpg'" />
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                </div>
+            `).join('');
+        }
+
+        renderWorks();
+    </script>
+
+</body>
+</html>
